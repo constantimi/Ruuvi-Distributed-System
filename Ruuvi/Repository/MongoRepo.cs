@@ -5,8 +5,9 @@ using System.Collections.Generic;
 using Ruuvi.Models;
 using System.Threading.Tasks;
 using System;
-using Ruuvi.Models.Data;
+using MongoDB.Driver.Linq;
 using MongoDB.Bson;
+using System.Linq.Expressions;
 
 namespace Ruuvi.Repository
 {
@@ -106,6 +107,16 @@ namespace Ruuvi.Repository
                 var objectId = new ObjectId(id);
                 _collection.DeleteOne(doc => doc.Id == objectId);
             });
+        }
+
+        public virtual IEnumerable<TDocument> FilterBy(Expression<Func<TDocument, bool>> filterExpression)
+        {
+           return _collection.Find(filterExpression).ToEnumerable();
+        }
+
+        public IEnumerable<TProjected> FilterBy<TProjected>(Expression<Func<TDocument, bool>> filterExpression, Expression<Func<TDocument, TProjected>> projectionExpression)
+        {
+            return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
     }
 }

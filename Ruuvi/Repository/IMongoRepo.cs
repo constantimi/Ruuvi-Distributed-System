@@ -1,5 +1,7 @@
 using Ruuvi.Models;
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace Ruuvi.Repository
@@ -9,6 +11,10 @@ namespace Ruuvi.Repository
         IEnumerable<TDocument> GetAll();
 
         Task<IEnumerable<TDocument>> GetAllAsync();
+
+         IEnumerable<TDocument> FilterBy(Expression<Func<TDocument, bool>> filterExpression);
+
+        IEnumerable<TProjected> FilterBy<TProjected>(Expression<Func<TDocument, bool>> filterExpression, Expression<Func<TDocument, TProjected>> projectionExpression);
         
         TDocument GetObjectById(string id);
 

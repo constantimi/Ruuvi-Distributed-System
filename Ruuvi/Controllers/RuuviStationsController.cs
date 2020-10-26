@@ -34,6 +34,18 @@ namespace Aqi.Controllers
             return NotFound();
         }
 
+        [HttpGet("latest")]
+        public ActionResult <IEnumerable<RuuviStationReadDto>> GetLatestRuuviStations()
+        {
+            var stationModelItems =  _repository.GetAll();
+            
+            if(stationModelItems != null){
+                return Ok(_mapper.Map<IEnumerable<RuuviStationReadDto>>(stationModelItems));
+            }
+
+            return NotFound();
+        }
+
         [HttpGet("{id}", Name="GetRuuviStationById")]
         public ActionResult <RuuviStationReadDto> GetRuuviStationById(string id)
         {
