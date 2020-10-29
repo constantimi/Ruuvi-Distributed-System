@@ -1,8 +1,7 @@
-using System;
-using Ruuvi.Models.Data;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+using Ruuvi.Models.Data;
 
 namespace Ruuvi.Dtos
 {
@@ -27,6 +26,6 @@ namespace Ruuvi.Dtos
 
         [Required]
         [DataType(DataType.Date)]
-        public DateTime Time { get; set;}
+        public DateTime Time { get; set; }
     }
 }

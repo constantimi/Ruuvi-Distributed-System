@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ruuvi.Models
@@ -16,6 +17,5 @@ namespace Ruuvi.Models
 
         [BsonElement]
         string DeviceId { get; set; }
-        
     }
 }

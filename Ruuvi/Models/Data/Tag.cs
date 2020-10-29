@@ -1,13 +1,12 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ruuvi.Models.Data
 {
-    public class Tag 
+    public class Tag
     {
-
         [BsonElement]
         public double AccelX { get; set; }
 
@@ -37,13 +36,13 @@ namespace Ruuvi.Models.Data
 
         [BsonElement]
         [MaxLength(250)]
-        public string Id { get; set;}
+        public string Id { get; set; }
 
         [BsonElement]
-        public int MeasurementSequenceNumber {get; set; }
+        public int MeasurementSequenceNumber { get; set; }
 
         [BsonElement]
-        public int MovementCounter  {get; set; }
+        public int MovementCounter { get; set; }
 
         [BsonElement]
         public long Pressure { get; set; }
@@ -60,7 +59,7 @@ namespace Ruuvi.Models.Data
         [BsonElement]
         [DataType(DataType.Date)]
         public DateTime UpdateAt { get; set; }
-        
+
         [BsonElement]
         public double Voltage { get; set; }
     }

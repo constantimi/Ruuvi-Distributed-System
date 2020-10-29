@@ -1,6 +1,7 @@
-using AutoMapper;
-using Ruuvi.Dtos;
+﻿using Ruuvi.Dtos;
 using Ruuvi.Models.Data;
+
+using AutoMapper;
 
 namespace Ruuvi.Profiles
 {
@@ -10,7 +11,7 @@ namespace Ruuvi.Profiles
         {
             CreateMap<RuuviStation, RuuviStationReadDto>();
             CreateMap<RuuviStationCreateDto, RuuviStation>();
-            CreateMap<RuuviStation,RuuviStationCreateDto>();
+            CreateMap<RuuviStation, RuuviStationCreateDto>();
         }
     }
 }

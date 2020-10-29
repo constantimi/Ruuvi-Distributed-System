@@ -1,17 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Ruuvi.Repository;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-
 namespace Ruuvi.Models.Data
 {
-   [BsonCollection("ruuvistations")]
-   public class RuuviStation : Document
-   {
-        
+    [BsonCollection("ruuvistations")]
+    public class RuuviStation : Document
+    {
         [BsonElement]
         public List<Tag> Tags { get; set; }
 
@@ -27,8 +25,6 @@ namespace Ruuvi.Models.Data
 
         [BsonElement]
         [DataType(DataType.Date)]
-        public DateTime Time { get; set;}
-
-   }
-
+        public DateTime Time { get; set; }
+    }
 }

@@ -3,7 +3,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UserSecretsId>ruvi-cecb2b77-7cdd-41cf-aace-ce3e561e1c58</UserSecretsId>
   </PropertyGroup>
-
+  
   <ItemGroup>
     <!-- Entity Framework Core Dependecy Injection-->
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.1" />

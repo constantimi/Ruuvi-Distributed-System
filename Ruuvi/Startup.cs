@@ -1,27 +1,29 @@
-
 using System;
+
+using Ruuvi.Repository;
+using Ruuvi.Settings;
+
 using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json.Serialization;
-using Ruuvi.Settings;
 using Microsoft.Extensions.Options;
-using Ruuvi.Repository;
+using Newtonsoft.Json.Serialization;
 
 namespace Ruuvi
 {
     public class Startup
     {
+        private IConfiguration _configuration;
+
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            this.Configuration = configuration;
         }
 
-        
-        public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get => _configuration; set => _configuration = value; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -29,57 +31,52 @@ namespace Ruuvi
             // MongoDb Configurations
             services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
 
-            services.AddSingleton<IMongoDbSettings>(serviceProvider =>
-                serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            services.AddScoped(typeof(IMongoRepo<>), typeof(MongoRepo<>));
+            // Scope
+            services.AddScoped(typeof(IMongoDataRepository<>), typeof(MongoDataRepository<>));
+
+            // Provider
+            services.AddSingleton<IMongoDbSettings>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
 
             // Controllers Serialization
-            services.AddControllers().AddNewtonsoftJson(s => {
-                s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            });  
-            
+            services.AddControllers().AddNewtonsoftJson(s => { s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); });
 
             // Swagger
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1",
-                new Microsoft.OpenApi.Models.OpenApiInfo
-                {
-                    Title = "Ruuvi Rest API",
-                    Version = "v1"
-                });
-            });
-            
-        }
+                    new Microsoft.OpenApi.Models.OpenApiInfo
+                    {
+                        Title = "API",
+                        Version = "v1"
+                    });
+                }); 
+            }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
 
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
-
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
+            // Swagger config
             app.UseSwagger();
 
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("/swagger/v1/swagger.json", "Ruuvi Rest API");
+                options.SwaggerEndpoint("swagger/v1/swagger.json", "API");
             });
         }
     }

@@ -1,126 +1,95 @@
-using Ruuvi.Dtos;
-using AutoMapper;
+﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Ruuvi.Dtos;
 using Ruuvi.Models.Data;
 using Ruuvi.Repository;
+
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading.Tasks;
-using System;
 
-namespace Aqi.Controllers
+namespace Ruuvi.Controllers
 {
-
-    [ApiController]
-    [Route("[controller]")]
-    public class RuuviStationsController : ControllerBase
+    [Route("api/stations")]
+    public class RuuviStationsController : Controller
     {
-        private readonly IMongoRepo<RuuviStation> _repository;
+        private readonly IMongoDataRepository<RuuviStation> _repository;
         private readonly IMapper _mapper;
-        public RuuviStationsController(IMongoRepo<RuuviStation> repository, IMapper mapper)
+
+        public RuuviStationsController(IMongoDataRepository<RuuviStation> repository, IMapper mapper)
         {
-            _repository = repository;
             _mapper = mapper;
+            _repository = repository;
         }
 
         [HttpGet]
-        public ActionResult <IEnumerable<RuuviStationReadDto>> GetAllRuuviStations(string jsonQuery)
+        public async Task<IActionResult> GetAllRuuviStations()
         {
-            var stationModelItems = jsonQuery == "" ? _repository.GetAll() : _repository.Filter(jsonQuery);
-            
-            if(stationModelItems != null){
-                return Ok(_mapper.Map<IEnumerable<RuuviStationReadDto>>(stationModelItems));
-            }
+            var stations = await _repository.GetAllLatestAsyc();
 
-            return NotFound();
-        }
-
-        [HttpGet("current")]
-        public ActionResult <IEnumerable<RuuviStationReadDto>> GetAllCurrentRuuviStations()
-        {
-            var stationModelItems = _repository.GetAllCurrent();
-            
-            if(stationModelItems != null){
-                return Ok(_mapper.Map<IEnumerable<RuuviStationReadDto>>(stationModelItems));
-            }
-
-            return NotFound();
-        }
-
-        [HttpGet("latest")]
-        public ActionResult <IEnumerable<RuuviStationReadDto>> GetAllLatestRuuviStations(string jsonQuery)
-        {
-            var stationModelItems =  _repository.GetLatest();
-            
-            if(stationModelItems != null){
-                return Ok(_mapper.Map<IEnumerable<RuuviStationReadDto>>(stationModelItems));
+            if (stations != null)
+            {
+                return Ok(_mapper.Map<IEnumerable<RuuviStationReadDto>>(stations));
             }
 
             return NotFound();
         }
 
         [HttpGet("{id}", Name="GetRuuviStationById")]
-        public ActionResult <RuuviStationReadDto> GetRuuviStationById(string id)
+        public async Task<IActionResult> GetRuuviStationById(string id)
         {
-            var ruuviModel = _repository.GetObjectById(id);
+            var station = await _repository.GetObjectByIdAsync(id);
 
-            if(ruuviModel != null)
+            if (station != null)
             {
-                return Ok(_mapper.Map<RuuviStationReadDto>(ruuviModel));    
+                return Ok(_mapper.Map<RuuviStationReadDto>(station));
             }
 
             return NotFound();
         }
 
         [HttpPost]
-        public ActionResult <RuuviStationCreateDto> CreateRuuviStation(RuuviStationCreateDto ruuviStationCreateDto)
+        public async Task<IActionResult> CreateRuuviStation(RuuviStationCreateDto ruuviStationCreateDto)
         {
-            var stationModel = _mapper.Map<RuuviStation>(ruuviStationCreateDto);
-            
-            stationModel.CreatedAt = DateTime.UtcNow;
-            stationModel.UpdatedAt = DateTime.UtcNow;
-            _repository.CreateObject(stationModel);
+            var station = _mapper.Map<RuuviStation>(ruuviStationCreateDto);
+        
+            await _repository.CreateObjectAsync(station);
 
-            var ruuviStationReadDto = _mapper.Map<RuuviStationReadDto>(stationModel);
-            
+            var ruuviStationReadDto = _mapper.Map<RuuviStationReadDto>(station);
+
             // https://docs.microsoft.com/en-us/dotnet/api/system.web.http.apicontroller.createdatroute?view=aspnetcore-2.2
-            return CreatedAtRoute(nameof(GetRuuviStationById), new {Id = ruuviStationReadDto.Id}, ruuviStationReadDto);
+            return CreatedAtRoute(nameof(GetRuuviStationById), new { Id = ruuviStationReadDto.Id }, ruuviStationReadDto);
         }
 
         [HttpPut("{id}")]
-        public ActionResult <RuuviStationCreateDto> EditStation(string id, RuuviStationCreateDto stationCreateDto)
+        public async Task<IActionResult> UpdateRuuviStation(string id, RuuviStationCreateDto stationCreateDto)
         {
             var stationModel = _mapper.Map<RuuviStation>(stationCreateDto);
-            var station = _repository.GetObjectById(id);
+            var station = await _repository.GetObjectByIdAsync(id);
 
-
-            if(station != null)
+            if (station != null)
             {
                 stationModel.UpdatedAt = DateTime.UtcNow;
                 stationModel.Id = new MongoDB.Bson.ObjectId(id);
                 _repository.UpdateObject(id, stationModel);
-                return Ok(_mapper.Map<RuuviStationReadDto>(stationModel));    
+                return Ok(_mapper.Map<RuuviStationReadDto>(stationModel));
             }
 
             return NotFound();
-
         }
 
         [HttpDelete("{id}")]
-        public ActionResult DeleteRuuviStation(string id)
+        public async Task<ActionResult> DeleteRuuviStation(string id)
         {
-            var stationModel = _repository.GetObjectById(id);
+            var stationModel = await _repository.GetObjectByIdAsync(id);
 
-            if(stationModel != null)
+            if (stationModel != null)
             {
-                
-                _repository.RemoveObject(stationModel);
-
+                await _repository.RemoveObjectAsync(stationModel);
                 return Ok("Successfully deleted from collection!");
- 
-            } 
+            }
 
             return NotFound();
         }
-
     }
 }

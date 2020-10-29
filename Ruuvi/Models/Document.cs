@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 
@@ -11,8 +11,7 @@ namespace Ruuvi.Models
         public DateTime CreatedAt { get; set; }
 
         public DateTime UpdatedAt { get; set; }
-        
-        [MaxLength(250)]
-        public string DeviceId { get ; set ; }
+
+        public string DeviceId { get; set; }
     }
 }
