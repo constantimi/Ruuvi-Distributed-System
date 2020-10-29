@@ -20,10 +20,6 @@ namespace Ruuvi.Models.Data
 
         [BsonElement]
         [MaxLength(250)]
-        public string DeviceId { get; set; }
-
-        [BsonElement]
-        [MaxLength(250)]
         public string EventId { get; set; }
 
         [BsonElement]

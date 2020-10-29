@@ -12,7 +12,13 @@ namespace Ruuvi.Repository
 
         Task<IEnumerable<TDocument>> GetAllAsync();
 
-         IEnumerable<TDocument> FilterBy(Expression<Func<TDocument, bool>> filterExpression);
+        IEnumerable<TDocument> GetLatest();
+
+        IEnumerable<TDocument> GetAllCurrent();
+
+        IEnumerable<TDocument> Filter (string jsonQuery);
+
+        IEnumerable<TDocument> FilterBy(Expression<Func<TDocument, bool>> filterExpression);
 
         IEnumerable<TProjected> FilterBy<TProjected>(Expression<Func<TDocument, bool>> filterExpression, Expression<Func<TDocument, TProjected>> projectionExpression);
         

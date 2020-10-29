@@ -13,5 +13,9 @@ namespace Ruuvi.Models
         DateTime CreatedAt { get; set; }
 
         DateTime UpdatedAt { get; set; }
+
+        [BsonElement]
+        string DeviceId { get; set; }
+        
     }
 }

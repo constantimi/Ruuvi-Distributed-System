@@ -8,6 +8,7 @@ using System;
 using MongoDB.Driver.Linq;
 using MongoDB.Bson;
 using System.Linq.Expressions;
+using MongoDB.Bson.Serialization;
 
 namespace Ruuvi.Repository
 {
@@ -38,8 +39,19 @@ namespace Ruuvi.Repository
         {
             return Task.Run( () =>
             {
-               return (IEnumerable<TDocument>) _collection.Find(doc => true).ToList();
+               return (IEnumerable<TDocument>) _collection.Find(doc => true).ToListAsync();
             });
+        }
+
+        public virtual IEnumerable<TDocument> GetLatest()
+        {
+            // CreatedAt should be changed to UpdatedAt
+            return _collection.Find(doc => true).ToList().OrderByDescending(doc => doc.CreatedAt).GroupBy(doc=> new {doc.DeviceId},(key,group)=>group.First());
+        }
+
+        public IEnumerable<TDocument> GetAllCurrent()
+        {
+            return _collection.Find<TDocument>( doc => doc.CreatedAt > DateTime.UtcNow.AddDays(-1)).ToList();
         }
 
         public virtual TDocument GetObjectById(string id)
@@ -118,5 +130,14 @@ namespace Ruuvi.Repository
         {
             return _collection.Find(filterExpression).Project(projectionExpression).ToEnumerable();
         }
+
+        public IEnumerable<TDocument> Filter(string jsonQuery)
+        {
+            // https://medium.com/@samueleresca/querying-mongodb-using-net-core-d8484b790e7e
+
+            var filter = BsonSerializer.Deserialize<BsonDocument>(jsonQuery);
+            return _collection.Find<TDocument>(filter).ToList();
+        }
+
     }
 }

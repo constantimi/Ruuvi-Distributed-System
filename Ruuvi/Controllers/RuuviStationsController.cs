@@ -23,9 +23,21 @@ namespace Aqi.Controllers
         }
 
         [HttpGet]
-        public ActionResult <IEnumerable<RuuviStationReadDto>> GetAllRuuviStations()
+        public ActionResult <IEnumerable<RuuviStationReadDto>> GetAllRuuviStations(string jsonQuery)
         {
-            var stationModelItems =  _repository.GetAll();
+            var stationModelItems = jsonQuery == "" ? _repository.GetAll() : _repository.Filter(jsonQuery);
+            
+            if(stationModelItems != null){
+                return Ok(_mapper.Map<IEnumerable<RuuviStationReadDto>>(stationModelItems));
+            }
+
+            return NotFound();
+        }
+
+        [HttpGet("current")]
+        public ActionResult <IEnumerable<RuuviStationReadDto>> GetAllCurrentRuuviStations()
+        {
+            var stationModelItems = _repository.GetAllCurrent();
             
             if(stationModelItems != null){
                 return Ok(_mapper.Map<IEnumerable<RuuviStationReadDto>>(stationModelItems));
@@ -35,9 +47,9 @@ namespace Aqi.Controllers
         }
 
         [HttpGet("latest")]
-        public ActionResult <IEnumerable<RuuviStationReadDto>> GetLatestRuuviStations()
+        public ActionResult <IEnumerable<RuuviStationReadDto>> GetAllLatestRuuviStations(string jsonQuery)
         {
-            var stationModelItems =  _repository.GetAll();
+            var stationModelItems =  _repository.GetLatest();
             
             if(stationModelItems != null){
                 return Ok(_mapper.Map<IEnumerable<RuuviStationReadDto>>(stationModelItems));
@@ -65,6 +77,7 @@ namespace Aqi.Controllers
             var stationModel = _mapper.Map<RuuviStation>(ruuviStationCreateDto);
             
             stationModel.CreatedAt = DateTime.UtcNow;
+            stationModel.UpdatedAt = DateTime.UtcNow;
             _repository.CreateObject(stationModel);
 
             var ruuviStationReadDto = _mapper.Map<RuuviStationReadDto>(stationModel);
