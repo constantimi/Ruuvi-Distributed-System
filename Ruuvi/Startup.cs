@@ -76,7 +76,7 @@ namespace Ruuvi
 
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("swagger/v1/swagger.json", "API");
+                options.SwaggerEndpoint("v1/swagger.json", "API");
             });
         }
     }
