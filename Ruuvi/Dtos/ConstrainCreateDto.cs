@@ -4,9 +4,16 @@ namespace Ruuvi.Dtos
 {
     public class ConstrainCreateDto
     {
-        [Required]
         [MaxLength(250)]
+        [Required]
         public string DeviceId { get; set; }
+
+        [MaxLength(250)]
+        [Required]
+        public string Name { get; set; }
+
+        [Required(AllowEmptyStrings = true)]
+        public string Description { get; set; }
 
         [Required]
         public double TemperatureMin { get; set; }

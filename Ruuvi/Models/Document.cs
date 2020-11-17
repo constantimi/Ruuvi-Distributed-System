@@ -12,6 +12,7 @@ namespace Ruuvi.Models
 
         public DateTime UpdatedAt { get; set; }
 
+        [MaxLength(250)]
         public string DeviceId { get; set; }
     }
 }
