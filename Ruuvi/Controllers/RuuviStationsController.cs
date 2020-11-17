@@ -7,6 +7,7 @@ using Ruuvi.Repository;
 
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace Ruuvi.Controllers
 {
@@ -63,10 +64,26 @@ namespace Ruuvi.Controllers
             return NotFound();
         }
 
+        [HttpGet("all-tags/{id}", Name = "GetAllTagsByDeviceId")]
+        public async Task<IActionResult> GetAllTagsByDeviceId(string id)
+        {
+            var stations = await _repository.GetAllObjectsByDeviceIdAsync(id);
+
+            if (stations != null)
+            {                
+                return Ok(_mapper.Map<List<TagReadDto>>(stations));
+            }
+
+            return NotFound();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateRuuviStation(RuuviStationCreateDto ruuviStationCreateDto)
         {
             var station = _mapper.Map<RuuviStation>(ruuviStationCreateDto);
+
+            station.Tags.ForEach(tag => tag.CreateDate = DateTime.UtcNow);
+            station.Tags.ForEach(tag => tag.UpdateAt = DateTime.UtcNow);
 
             await _repository.CreateObjectAsync(station);
 
@@ -86,6 +103,8 @@ namespace Ruuvi.Controllers
             {
                 stationModel.UpdatedAt = DateTime.UtcNow;
                 stationModel.Id = new MongoDB.Bson.ObjectId(id);
+                stationModel.Tags.ForEach(tag => tag.UpdateAt = DateTime.UtcNow);
+                
                 _repository.UpdateObject(id, stationModel);
                 return Ok(_mapper.Map<RuuviStationReadDto>(stationModel));
             }
