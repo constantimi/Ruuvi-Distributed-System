@@ -38,7 +38,7 @@ namespace Ruuvi.Controllers
             return NotFound();
         }
 
-        [HttpGet("{id}", Name="GetRuuviStationByDeviceId")]
+        [HttpGet("{id}", Name = "GetRuuviStationByDeviceId")]
         public async Task<IActionResult> GetRuuviStationByDeviceId(string id)
         {
             var station = await _repository.GetObjectByDeviceIdAsync(id);
@@ -70,7 +70,7 @@ namespace Ruuvi.Controllers
             var stations = await _repository.GetAllObjectsByDeviceIdAsync(id);
 
             if (stations != null)
-            {                
+            {
                 return Ok(_mapper.Map<List<TagReadDto>>(stations));
             }
 
@@ -82,7 +82,9 @@ namespace Ruuvi.Controllers
         {
             var station = _mapper.Map<RuuviStation>(ruuviStationCreateDto);
 
-~
+            station.Tags.ForEach(tag => tag.UpdateAt = DateTime.UtcNow);
+            station.Tags.ForEach(tag => tag.CreateDate = DateTime.UtcNow);
+
             await _repository.CreateObjectAsync(station);
 
             var ruuviStationReadDto = _mapper.Map<RuuviStationReadDto>(station);
@@ -102,7 +104,7 @@ namespace Ruuvi.Controllers
                 stationModel.UpdatedAt = DateTime.UtcNow;
                 stationModel.Id = new MongoDB.Bson.ObjectId(id);
                 stationModel.Tags.ForEach(tag => tag.UpdateAt = DateTime.UtcNow);
-                
+
                 _repository.UpdateObject(id, stationModel);
                 return Ok(_mapper.Map<RuuviStationReadDto>(stationModel));
             }
