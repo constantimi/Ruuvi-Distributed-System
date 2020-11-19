@@ -82,9 +82,7 @@ namespace Ruuvi.Controllers
         {
             var station = _mapper.Map<RuuviStation>(ruuviStationCreateDto);
 
-            station.Tags.ForEach(tag => tag.CreateDate = DateTime.UtcNow);
-            station.Tags.ForEach(tag => tag.UpdateAt = DateTime.UtcNow);
-
+~
             await _repository.CreateObjectAsync(station);
 
             var ruuviStationReadDto = _mapper.Map<RuuviStationReadDto>(station);
