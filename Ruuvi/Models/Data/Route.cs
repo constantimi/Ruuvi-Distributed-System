@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Ruuvi.Repository;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;

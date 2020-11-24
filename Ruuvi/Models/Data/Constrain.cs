@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Ruuvi.Repository;
+﻿using Ruuvi.Repository;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ruuvi.Models.Data

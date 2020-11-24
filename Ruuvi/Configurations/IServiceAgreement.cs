@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using Ruuvi.Models.Data;
 
-namespace Ruuvi.Configuration
+namespace Ruuvi.Configurations
 {
     public interface IServiceAgreement
     {
-        List<Dictionary<string, bool>> Check();
+        List<Configuration> IsBreached(string id);
 
-        bool Breached(Tag tag);
     }
 }

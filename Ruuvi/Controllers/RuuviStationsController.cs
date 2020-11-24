@@ -7,7 +7,6 @@ using Ruuvi.Repository;
 
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace Ruuvi.Controllers
 {
@@ -29,6 +28,7 @@ namespace Ruuvi.Controllers
         public async Task<IActionResult> GetAllRuuviStations()
         {
             var stations = await _repository.GetAllLatestAsync();
+            stations.ForEach(s => s.Tags.RemoveAll(t => t.IsActive != true));
 
             if (stations != null)
             {
@@ -38,7 +38,7 @@ namespace Ruuvi.Controllers
             return NotFound();
         }
 
-        [HttpGet("{id}", Name = "GetRuuviStationByDeviceId")]
+        [HttpGet("{id}", Name="GetRuuviStationByDeviceId")]
         public async Task<IActionResult> GetRuuviStationByDeviceId(string id)
         {
             var station = await _repository.GetObjectByDeviceIdAsync(id);
@@ -64,14 +64,14 @@ namespace Ruuvi.Controllers
             return NotFound();
         }
 
-        [HttpGet("all-tags/{id}", Name = "GetAllTagsByDeviceId")]
+        [HttpGet("tags/{id}", Name = "GetAllTagsByDeviceId")]
         public async Task<IActionResult> GetAllTagsByDeviceId(string id)
         {
             var stations = await _repository.GetAllObjectsByDeviceIdAsync(id);
 
             if (stations != null)
             {
-                return Ok(_mapper.Map<List<TagReadDto>>(stations));
+                return Ok(_mapper.Map<IEnumerable<TagReadDto>>(stations));
             }
 
             return NotFound();
@@ -82,8 +82,9 @@ namespace Ruuvi.Controllers
         {
             var station = _mapper.Map<RuuviStation>(ruuviStationCreateDto);
 
-            station.Tags.ForEach(tag => tag.UpdateAt = DateTime.UtcNow);
             station.Tags.ForEach(tag => tag.CreateDate = DateTime.UtcNow);
+            station.Tags.ForEach(tag => tag.UpdateAt = DateTime.UtcNow);
+            station.Tags.ForEach(tag => tag.IsActive = true);
 
             await _repository.CreateObjectAsync(station);
 
@@ -97,7 +98,7 @@ namespace Ruuvi.Controllers
         public async Task<IActionResult> UpdateRuuviStation(string id, RuuviStationCreateDto stationCreateDto)
         {
             var stationModel = _mapper.Map<RuuviStation>(stationCreateDto);
-            var station = await _repository.GetObjectByIdAsync(id);
+            var station = await _repository.GetObjectByDeviceIdAsync(id);
 
             if (station != null)
             {
@@ -115,11 +116,11 @@ namespace Ruuvi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteRuuviStation(string id)
         {
-            var stationModel = await _repository.GetObjectByIdAsync(id);
+            var station = await _repository.GetObjectByDeviceIdAsync(id);
 
-            if (stationModel != null)
+            if (station != null)
             {
-                await _repository.RemoveObjectAsync(stationModel);
+                await _repository.RemoveObjectAsync(station);
                 return Ok("Successfully deleted from collection!");
             }
 
