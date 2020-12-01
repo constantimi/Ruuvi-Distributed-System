@@ -1,7 +1,8 @@
-﻿using MongoDB.Bson;
+﻿using Ruuvi.Models.Data;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Ruuvi.Models.Data
+namespace Ruuvi.Models.Core
 {
     public class Boundary
     {

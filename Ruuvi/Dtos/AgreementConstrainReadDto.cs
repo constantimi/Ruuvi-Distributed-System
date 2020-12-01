@@ -1,33 +1,34 @@
-﻿using Ruuvi.Repository;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using System;
+using System.Collections.Generic;
 
-namespace Ruuvi.Models.Data
+namespace Ruuvi.Dtos
 {
-    [BsonCollection("constrains")]
-    public class Constrain : Document
+    public class AgreementConstrainReadDto
     {
-        [BsonElement]
+        public string Id { get; set; }
+
+        public List<string> Devices { get; set; }
+
+        public int ConstrainId { get; set; }
+
         public string Name { get; set; }
 
-        [BsonElement]
         public string Description { get; set; }
 
-        [BsonElement]
         public double TemperatureMin { get; set; }
 
-        [BsonElement]
         public double TemperatureMax { get; set; }
 
-        [BsonElement]
         public double HumidityMin { get; set; }
 
-        [BsonElement]
         public double HumidityMax { get; set; }
 
-        [BsonElement]
         public double PressureMin { get; set; }
 
-        [BsonElement]
         public double PressureMax { get; set; }
+
+        public DateTime CreatedAt { get; set; }
+
+        public DateTime UpdatedAt { get; set; }
     }
 }

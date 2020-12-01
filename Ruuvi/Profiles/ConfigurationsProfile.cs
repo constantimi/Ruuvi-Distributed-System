@@ -1,5 +1,5 @@
-using Ruuvi.Dtos;
-using Ruuvi.Models.Data;
+﻿using Ruuvi.Dtos;
+using Ruuvi.Models.Core;
 
 using AutoMapper;
 
@@ -9,7 +9,7 @@ namespace Ruuvi.Profiles
     {
         public ConfigurationsProfile()
         {
-            CreateMap<Configuration, ConfigurationReadDto>();
+            CreateMap<ServiceAgreement, ServiceConfigurationReadDto>();
         }
     }
 }

@@ -71,7 +71,7 @@ namespace Ruuvi.Controllers
 
             if (stations != null)
             {
-                return Ok(_mapper.Map<IEnumerable<TagReadDto>>(stations));
+                return Ok(_mapper.Map<List<TagReadDto>>(stations));
             }
 
             return NotFound();
@@ -98,7 +98,7 @@ namespace Ruuvi.Controllers
         public async Task<IActionResult> UpdateRuuviStation(string id, RuuviStationCreateDto stationCreateDto)
         {
             var stationModel = _mapper.Map<RuuviStation>(stationCreateDto);
-            var station = await _repository.GetObjectByDeviceIdAsync(id);
+            var station = await _repository.GetObjectByIdAsync(id);
 
             if (station != null)
             {
@@ -116,11 +116,11 @@ namespace Ruuvi.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteRuuviStation(string id)
         {
-            var station = await _repository.GetObjectByDeviceIdAsync(id);
+            var stationModel = await _repository.GetObjectByDeviceIdAsync(id);
 
-            if (station != null)
+            if (stationModel != null)
             {
-                await _repository.RemoveObjectAsync(station);
+                await _repository.RemoveObjectAsync(stationModel);
                 return Ok("Successfully deleted from collection!");
             }
 

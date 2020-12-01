@@ -1,8 +1,9 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Ruuvi.Models;
 using MongoDB.Bson;
 
-namespace Ruuvi.Models
+namespace Ruuvi.Models.Data
 {
     public abstract class Document : IDocument
     {

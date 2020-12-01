@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Ruuvi.Models.Data;
+using Ruuvi.Models.Core;
 
 namespace Ruuvi.Dtos
 {
@@ -10,7 +8,13 @@ namespace Ruuvi.Dtos
     {
         public string Id { get; set; }
 
-        public string DeviceId { get; set; }
+        public List<string> Devices { get; set; }
+
+        public int ConstrainId { get; set; }
+
+        public string Name { get; set; }
+
+        public string Description { get; set; }
 
         public List<Boundary> Points { get; set; }
 

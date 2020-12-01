@@ -9,7 +9,7 @@ using Ruuvi.Settings;
 using MongoDB.Bson;
 using MongoDB.Driver;
 
-namespace Ruuvi.Repository
+namespace Ruuvi.Repository.Service
 {
     public class MongoDataRepository<TDocument> : IMongoDataRepository<TDocument>
     where TDocument : IDocument
@@ -70,7 +70,7 @@ namespace Ruuvi.Repository
         // Returns an object by the deviceId unique for every RuuviStation.
         public TDocument GetObjectByDeviceId(string id)
         {
-            var matches = _collection.Find(doc => doc.DeviceId == id).ToList().OrderByDescending(doc => doc.UpdatedAt);
+            var matches = _collection.Find(doc => doc.DeviceId == id).ToList().OrderByDescending(doc => doc.UpdatedAt).ToList();
             return matches.FirstOrDefault();
         }
 

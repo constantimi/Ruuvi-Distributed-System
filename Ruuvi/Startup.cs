@@ -1,6 +1,8 @@
 using System;
-
+using Ruuvi.Hubs;
+using Ruuvi.Models.Data;
 using Ruuvi.Repository;
+using Ruuvi.Repository.Service;
 using Ruuvi.Settings;
 
 using AutoMapper;
@@ -16,41 +18,75 @@ namespace Ruuvi
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            this.Configuration = configuration;
-        }
-
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            // MongoDb Configurations
-            services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
+            services.AddControllers()
+                .AddNewtonsoftJson(options =>
+                {
+                    var contractResolver = new CamelCasePropertyNamesContractResolver();
+                    options.SerializerSettings.ContractResolver = contractResolver;
+                });
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-            // Scope
-            services.AddScoped(typeof(IMongoDataRepository<>), typeof(MongoDataRepository<>));
+            ConfigureSwaggerServices(services);
+            ConfigureDatabaseServices(services);
+            ConfigureCrossOriginResourceSharing(services);
 
-            // Provider
-            services.AddSingleton<IMongoDbSettings>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+            // Scope
+            services.AddScoped(typeof(IConstrainDataRepository<>), typeof(ConstrainDataRepository<>));
+
+            services.AddScoped(typeof(IMongoDataRepository<>), typeof(MongoDataRepository<>));
+            services.AddScoped(typeof(IMongoDataRepository<RuuviStation>), typeof(MockRuuviStationRepository));
 
             // Controllers Serialization
             services.AddControllers().AddNewtonsoftJson(s => { s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); });
 
+            // SignalR
+            services.AddSignalR();
+        }
+
+        public void ConfigureDatabaseServices(IServiceCollection services)
+        {
+            // MongoDB Configuration
+            services.Configure<MongoDbSettings>(Configuration.GetSection(nameof(MongoDbSettings)));
+            services.AddSingleton<IMongoDbSettings>(serviceProvider => serviceProvider.GetRequiredService<IOptions<MongoDbSettings>>().Value);
+        }
+
+        public void ConfigureSwaggerServices(IServiceCollection services)
+        {
             // Swagger
             services.AddSwaggerGen(options =>
             {
-                options.SwaggerDoc("v1",
-                    new Microsoft.OpenApi.Models.OpenApiInfo
-                    {
-                        Title = "API",
-                        Version = "v1"
-                    });
-                }); 
-            }
+                options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+                {
+                    Title = "API",
+                    Version = "v1"
+                });
+            });
+        }
+
+        public void ConfigureCrossOriginResourceSharing(IServiceCollection services)
+        {
+            // SignalR
+            services.AddCors(options =>
+            {
+                options.AddPolicy("ClientPermission", policy =>
+                {
+                    policy.AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .WithOrigins("http://localhost:3000")
+                        .AllowCredentials();
+                });
+            });
+        }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
@@ -60,22 +96,26 @@ namespace Ruuvi
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
 
             app.UseRouting();
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<RuuviStationHub>("/hubs/stations");
             });
+
 
             // Swagger config
             app.UseSwagger();
 
             app.UseSwaggerUI(options =>
             {
-                options.SwaggerEndpoint("v1/swagger.json", "API");
+                options.SwaggerEndpoint("/swagger/v1/swagger.json", "API");
             });
+
+            // SignalR
+            app.UseCors("ClientPermission");
         }
     }
 }
