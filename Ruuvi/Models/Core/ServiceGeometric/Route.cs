@@ -1,13 +1,17 @@
 ﻿using System.Collections.Generic;
-using Ruuvi.Repository.Service;
+using Ruuvi.Models.Data;
+using Ruuvi.Repository;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ruuvi.Models.Core
 {
     [BsonCollection("geometric_constrains")]
-    public class Route : Constrain
+    public class Route : Document
     {
+        [BsonElement]
+        public List<string> Devices { get; set; }
+
         [BsonElement]
         public string Name { get; set; }
 

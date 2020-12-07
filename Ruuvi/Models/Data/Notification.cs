@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Ruuvi.Repository.Service;
+﻿using System.ComponentModel.DataAnnotations;
+using Ruuvi.Repository;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ruuvi.Models.Data
@@ -10,6 +7,9 @@ namespace Ruuvi.Models.Data
     [BsonCollection("notifications")]
     public class Notification : Document
     {
+        [MaxLength(250)]
+        public string DeviceId { get; set; }
+
         [BsonElement]
         public string Title { get; set; }
 

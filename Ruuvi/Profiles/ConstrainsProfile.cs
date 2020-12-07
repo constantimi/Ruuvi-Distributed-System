@@ -1,5 +1,5 @@
-﻿using Ruuvi.Dtos;
-using Ruuvi.Models.Core;
+﻿using Ruuvi.Dtos.Core;
+using Ruuvi.Models.Core.ServiceAgreement;
 
 using AutoMapper;
 

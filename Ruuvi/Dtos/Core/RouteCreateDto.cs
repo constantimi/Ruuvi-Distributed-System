@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Ruuvi.Models.Core;
 
-namespace Ruuvi.Dtos
+namespace Ruuvi.Dtos.Core
 {
     public class RouteCreateDto
     {

@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Ruuvi.Dtos;
-using Ruuvi.Models.Core;
-using Ruuvi.Models.Data;
+using Ruuvi.Dtos.Core;
+using Ruuvi.Models.Core.ServiceAgreement;
 using Ruuvi.Repository;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+
+using MongoDB.Bson;
 
 namespace Ruuvi.Controllers
 {
@@ -16,10 +16,10 @@ namespace Ruuvi.Controllers
     [ApiController]
     public class AgreementsController : ControllerBase
     {
-        private readonly IConstrainDataRepository<Agreement> _repository;
+        private readonly IMongoDataRepository<Agreement> _repository;
         private readonly IMapper _mapper;
 
-        public AgreementsController(IConstrainDataRepository<Agreement> repository, IMapper mapper)
+        public AgreementsController(IMongoDataRepository<Agreement> repository, IMapper mapper)
         {
             _mapper = mapper;
             _repository = repository;
@@ -28,7 +28,7 @@ namespace Ruuvi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllConstrains()
         {
-            var constrains = await _repository.GetAllLatestAsync();
+            var constrains = await _repository.GetAllAsync();
 
             if (constrains != null)
             {
@@ -38,14 +38,14 @@ namespace Ruuvi.Controllers
             return NotFound();
         }
 
-        [HttpGet("{id}", Name = "GetConstrainByConstrainId")]
-        public async Task<IActionResult> GetConstrainByConstrainId(string id)
+        [HttpGet("{id}", Name = "GetConstrainByObjectId")]
+        public async Task<IActionResult> GetConstrainByObjectId(string id)
         {
-            var constrains = await _repository.GetAllObjectsByConstrainIdAsync(id);
+            var constrain = await _repository.GetObjectByIdAsync(id);
 
-            if (constrains != null)
+            if (constrain != null)
             {
-                return Ok(_mapper.Map<IEnumerable<AgreementConstrainReadDto>>(constrains));
+                return Ok(_mapper.Map<AgreementConstrainReadDto>(constrain));
             }
 
             return NotFound();
@@ -58,9 +58,6 @@ namespace Ruuvi.Controllers
 
             if (constrain != null)
             {
-                var lastConstrain = await _repository.GetLastConstrainIdAsync();
-                constrain.ConstrainId = lastConstrain != null ? lastConstrain.ConstrainId + 1 : 0;
-
                 await _repository.CreateObjectAsync(constrain);
 
                 return Ok(_mapper.Map<AgreementConstrainReadDto>(constrain));
@@ -70,16 +67,16 @@ namespace Ruuvi.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateConstrain(string id, AgreementConstrainCreateDto constrainCreateDto)
+        public async Task<IActionResult> UpdateConstrainByObjectId(string id, AgreementConstrainCreateDto constrainCreateDto)
         {
             var constrainModel = _mapper.Map<Agreement>(constrainCreateDto);
-            var constrain = await _repository.GetObjectByConstrainIdAsync(id);
+            var constrain = await _repository.GetObjectByIdAsync(id);
 
             if (constrain != null)
             {
                 constrainModel.UpdatedAt = DateTime.UtcNow;
-                constrainModel.Id = new MongoDB.Bson.ObjectId(id);
-                _repository.UpdateObject(id, constrainModel);
+                constrainModel.Id = new ObjectId(id);
+                await _repository.UpdateObjectAsync(id, constrainModel);
                 return Ok(_mapper.Map<AgreementConstrainReadDto>(constrainModel));
             }
 
@@ -87,9 +84,9 @@ namespace Ruuvi.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteConstrain(string id)
+        public async Task<ActionResult> DeleteConstrainByObjectId(string id)
         {
-            var constrainModel = await _repository.GetObjectByConstrainIdAsync(id);
+            var constrainModel = await _repository.GetObjectByIdAsync(id);
 
             if (constrainModel != null)
             {

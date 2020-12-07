@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ruuvi.Repository.Service
+namespace Ruuvi.Repository
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false)]
     internal class BsonCollectionAttribute : Attribute

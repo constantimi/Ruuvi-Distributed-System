@@ -1,9 +1,11 @@
 ﻿using System;
 
-namespace Ruuvi.Dtos
+namespace Ruuvi.Dtos.Core
 {
     public class ServiceConfigurationReadDto
     {
+        public string DeviceId { get; set; }
+
         public bool IsActive { get; set; }
 
         public string TagId { get; set; }

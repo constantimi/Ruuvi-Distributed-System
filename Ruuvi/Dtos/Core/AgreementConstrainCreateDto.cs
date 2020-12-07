@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Ruuvi.Models.Data;
 
-namespace Ruuvi.Dtos
+namespace Ruuvi.Dtos.Core
 {
     public class AgreementConstrainCreateDto
     {
         [MaxLength(250)]
         [Required]
-        public List<string> Devices { get; set; }
+        public List<Tag> Tags { get; set; }
 
         [MaxLength(250)]
         [Required]

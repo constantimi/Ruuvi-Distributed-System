@@ -1,8 +1,6 @@
 using System;
 using Ruuvi.Hubs;
-using Ruuvi.Models.Data;
 using Ruuvi.Repository;
-using Ruuvi.Repository.Service;
 using Ruuvi.Settings;
 
 using AutoMapper;
@@ -41,10 +39,7 @@ namespace Ruuvi
             ConfigureCrossOriginResourceSharing(services);
 
             // Scope
-            services.AddScoped(typeof(IConstrainDataRepository<>), typeof(ConstrainDataRepository<>));
-
             services.AddScoped(typeof(IMongoDataRepository<>), typeof(MongoDataRepository<>));
-            services.AddScoped(typeof(IMongoDataRepository<RuuviStation>), typeof(MockRuuviStationRepository));
 
             // Controllers Serialization
             services.AddControllers().AddNewtonsoftJson(s => { s.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver(); });
@@ -104,7 +99,6 @@ namespace Ruuvi
                 endpoints.MapControllers();
                 endpoints.MapHub<RuuviStationHub>("/hubs/stations");
             });
-
 
             // Swagger config
             app.UseSwagger();

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ruuvi.Models.Core
+namespace Ruuvi.Models.Core.ServiceAgreement
 {
     public class ServiceAgreement
     {

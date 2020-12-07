@@ -1,4 +1,4 @@
-﻿using Ruuvi.Dtos;
+﻿using Ruuvi.Dtos.Core;
 using Ruuvi.Models.Core;
 
 using AutoMapper;
