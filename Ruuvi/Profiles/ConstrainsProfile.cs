@@ -1,5 +1,5 @@
-﻿using Ruuvi.Dtos;
-using Ruuvi.Models.Data;
+﻿using Ruuvi.Dtos.Core;
+using Ruuvi.Models.Core.ServiceAgreement;
 
 using AutoMapper;
 
@@ -9,9 +9,9 @@ namespace Ruuvi.Profiles
     {
         public ConstrainsProfile()
         {
-            CreateMap<Constrain, ConstrainReadDto>();
-            CreateMap<ConstrainCreateDto, Constrain>();
-            CreateMap<Constrain, ConstrainCreateDto>();
+            CreateMap<Agreement, AgreementConstrainReadDto>();
+            CreateMap<AgreementConstrainCreateDto, Agreement>();
+            CreateMap<Agreement, AgreementConstrainCreateDto>();
         }
     }
 }

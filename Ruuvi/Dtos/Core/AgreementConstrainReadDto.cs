@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using Ruuvi.Models.Data;
 
-namespace Ruuvi.Dtos
+namespace Ruuvi.Dtos.Core
 {
-    public class ConstrainReadDto
+    public class AgreementConstrainReadDto
     {
         public string Id { get; set; }
 
-        public string DeviceId { get; set; }
+        public List<Tag> Tags { get; set; }
 
         public string Name { get; set; }
 

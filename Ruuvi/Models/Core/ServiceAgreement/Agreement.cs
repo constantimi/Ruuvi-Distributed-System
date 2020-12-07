@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using Ruuvi.Models.Data;
 using Ruuvi.Repository;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace Ruuvi.Models.Data
+namespace Ruuvi.Models.Core.ServiceAgreement
 {
-    [BsonCollection("constrains")]
-    public class Constrain : Document
+    [BsonCollection("agreement_constrains")]
+    public class Agreement : Document
     {
+        [BsonElement]
+        public List<Tag> Tags { get; set; }
+
         [BsonElement]
         public string Name { get; set; }
 

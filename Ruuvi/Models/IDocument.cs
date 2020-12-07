@@ -1,6 +1,5 @@
 ﻿using System;
 using MongoDB.Bson;
-using MongoDB.Bson.Serialization;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace Ruuvi.Models
@@ -14,8 +13,5 @@ namespace Ruuvi.Models
         DateTime CreatedAt { get; set; }
 
         DateTime UpdatedAt { get; set; }
-
-        [BsonElement]
-        string DeviceId { get; set; }
     }
 }

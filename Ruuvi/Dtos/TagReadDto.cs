@@ -1,10 +1,12 @@
-using System;
+﻿using System;
 
 namespace Ruuvi.Dtos
 {
     public class TagReadDto
     {
         public string Id { get; set; }
+
+        public bool IsActive { get; set; }
 
         public DateTime UpdateAt { get; set; }
 
