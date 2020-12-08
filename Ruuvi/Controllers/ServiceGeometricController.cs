@@ -1,31 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Ruuvi.Configurations;
 using Ruuvi.Dtos.Core;
-using Ruuvi.Models.Core.ServiceAgreement;
+using Ruuvi.Models.Core;
 using Ruuvi.Models.Data;
 using Ruuvi.Repository;
-
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ruuvi.Controllers
 {
     [Produces("application/json")]
-    [Route("api/agreement/configurations")]
+    [Route("api/geometric/configurations")]
     [ApiController]
-    public class ServiceAgreementController : ControllerBase
+    public class ServiceGeometricController : ControllerBase
     {
-        private readonly IMongoDataRepository<Agreement> _repositoryConstrain;
+        private readonly IMongoDataRepository<Route> _repositoryConstrain;
         private readonly IMongoDataRepository<RuuviStation> _repositoryRuuviStation;
         private readonly IMapper _mapper;
 
-        public ServiceAgreementController(IMongoDataRepository<Agreement> repositoryConstrain, IMongoDataRepository<RuuviStation> repositoryRuuviStation, IMapper mapper)
+        public ServiceGeometricController(IMongoDataRepository<Route> repositoryConstrain, IMongoDataRepository<RuuviStation> repositoryRuuviStation, IMapper mapper)
         {
-            this._repositoryRuuviStation = repositoryRuuviStation;
             this._repositoryConstrain = repositoryConstrain;
+            this._repositoryRuuviStation = repositoryRuuviStation;
             _mapper = mapper;
         }
 
@@ -43,10 +41,10 @@ namespace Ruuvi.Controllers
 
             if (station != null)
             {
-                var serviceAgreement = new ServiceAgreementConfiguration(station, _repositoryConstrain);
+                var geometricAgreement = new ServiceGeometricConfiguration(station, _repositoryConstrain);
 
-                var breachedStations = await serviceAgreement.IsBreached();
-                return Ok(_mapper.Map<IEnumerable<ServiceAgreementReadDto>>(breachedStations));
+                var breachedStations = await geometricAgreement.IsBreached();
+                return Ok(_mapper.Map<IEnumerable<ServiceGeometricReadDto>>(breachedStations));
             }
 
             return NotFound();

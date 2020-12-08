@@ -7,7 +7,7 @@ using Ruuvi.Repository;
 
 namespace Ruuvi.Configurations
 {
-    public class ServiceAgreementConfiguration : IConfiguration<ServiceAgreement>
+    public class ServiceAgreementConfiguration : IServiceConfiguration<ServiceAgreement>
     {
         private readonly IMongoDataRepository<Agreement> _repository;
         private RuuviStation _station;

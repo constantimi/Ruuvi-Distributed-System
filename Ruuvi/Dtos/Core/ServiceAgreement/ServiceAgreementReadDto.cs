@@ -2,7 +2,7 @@
 
 namespace Ruuvi.Dtos.Core
 {
-    public class ServiceConfigurationReadDto
+    public class ServiceAgreementReadDto
     {
         public string DeviceId { get; set; }
 

@@ -9,9 +9,9 @@ namespace Ruuvi.Profiles
     {
         public ConstrainsProfile()
         {
-            CreateMap<Agreement, AgreementConstrainReadDto>();
-            CreateMap<AgreementConstrainCreateDto, Agreement>();
-            CreateMap<Agreement, AgreementConstrainCreateDto>();
+            CreateMap<Agreement, AgreementReadDto>();
+            CreateMap<AgreementCreateDto, Agreement>();
+            CreateMap<Agreement, AgreementCreateDto>();
         }
     }
 }
