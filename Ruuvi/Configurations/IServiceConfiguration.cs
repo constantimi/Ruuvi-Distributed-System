@@ -4,7 +4,7 @@ using Ruuvi.Models.Core;
 
 namespace Ruuvi.Configurations
 {
-    public interface IConfiguration<TConfiguration>
+    public interface IServiceConfiguration<TConfiguration>
     {
         Task<List<TConfiguration>> IsBreached();
     }
